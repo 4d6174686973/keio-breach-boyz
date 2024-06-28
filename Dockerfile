@@ -5,6 +5,7 @@ FROM openjdk:17-alpine
 RUN apk add --no-cache \
     nodejs \
     npm \
+    git \
     && npm install -g yarn
 
 # Set the working directory in the container
@@ -24,8 +25,12 @@ RUN npx tailwindcss init -p
 COPY . .
 
 # Build ScalarDB
+# RUN mkdir scalardb
+# RUN cd scalardb
+# RUN git clone https://github.com/scalar-labs/scalardb
 # WORKDIR /workspace/scalardb
-# RUN ./gradlew build
+# RUN git pull --rebase
+# RUN ./gradlew run 
 
 # Set the working directory back to the root
 # WORKDIR /workspace
