@@ -17,3 +17,14 @@ cd app
 yarn
 yarn start
 ```
+
+# How to enter main container
+
+```sh
+docker exec -it web-container /bin/sh  
+```
+
+# ScalarDB commands
+```sh
+java -jar scalardb-schema-loader-3.9.6-all.jar --config scalardb.properties --schema-file emoney.json --coordinator
+```

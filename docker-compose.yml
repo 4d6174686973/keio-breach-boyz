@@ -2,20 +2,29 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    build: 
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    container_name: web-container
     volumes:
       - .:/workspace
     ports:
       - "3000:3000"
-    command: yarn start
+    # Overrides default command so things don't shut down after the process ends.
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    depends_on:
+      - cassandra
+      - mysql
 
   cassandra:
     image: cassandra:latest
+    container_name: cassandra-container
     ports:
       - "9042:9042"
 
   mysql:
     image: mysql:latest
+    container_name: mysql-container
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mydb

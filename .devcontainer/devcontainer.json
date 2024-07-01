@@ -3,12 +3,17 @@
     "dockerComposeFile": "../docker-compose.yml",
     "service": "web",
     "workspaceFolder": "/workspace",
+    "shutdownAction": "stopCompose",
     "customizations": {
         "vscode": {
             "extensions": [
                 "esbenp.prettier-vscode",
                 "dbaeumer.vscode-eslint"
-            ]
+            ],
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "editor.formatOnSave": true
+            }
         }
     }
 }
