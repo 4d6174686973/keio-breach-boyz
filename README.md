@@ -7,6 +7,7 @@ git clone https://github.com/scalar-labs/scalardb.git
 ```
 
 2. Build Docker Container
+Important: To fix context error while rebuilding, delete node_modules and app/node_modules
 ```sh
 docker-compose up --build
 ```
