@@ -12,9 +12,12 @@ services:
       - "3000:3000"
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
+    environment:
+      - SCALARDB_CONTACT_POINTS=cassandra  # Add necessary environment variables
+      - SCALARDB_USERNAME=cassandra
+      - SCALARDB_PASSWORD=cassandra
     depends_on:
       - cassandra
-      - mysql
 
   cassandra:
     image: cassandra:4.0
@@ -22,13 +25,13 @@ services:
     ports:
       - "9042:9042"
 
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-1
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    ports:
-      - "3306:3306"
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: mysql-1
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: mydb
+  #     MYSQL_USER: user
+  #     MYSQL_PASSWORD: password
+  #   ports:
+  #     - "3306:3306"
