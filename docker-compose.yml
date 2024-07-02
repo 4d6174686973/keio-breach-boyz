@@ -5,7 +5,7 @@ services:
     build: 
       context: .
       dockerfile: .devcontainer/Dockerfile
-    container_name: web-container
+    container_name: web-1
     volumes:
       - .:/workspace
     ports:
@@ -18,13 +18,13 @@ services:
 
   cassandra:
     image: cassandra:4.0
-    container_name: cassandra-container
+    container_name: cassandra-1
     ports:
       - "9042:9042"
 
   mysql:
     image: mysql:8.0
-    container_name: mysql-container
+    container_name: mysql-1
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mydb
