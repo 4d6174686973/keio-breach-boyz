@@ -14,4 +14,4 @@ RUN ./gradlew bootJar
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "build/libs/your-app-name.jar"]
+CMD ["java", "-jar", "build/libs/scalardb.jar"]

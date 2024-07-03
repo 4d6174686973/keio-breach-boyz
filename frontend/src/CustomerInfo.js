@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:3000';
+// axios.defaults.baseURL = 'http://localhost:3000';
 
 const CustomerInfo = () => {
   const [customerId, setCustomerId] = useState('');
@@ -10,7 +10,8 @@ const CustomerInfo = () => {
   const fetchCustomerInfo = async () => {
     console.log('Button clicked, fetching customer info for ID:', customerId);
     try {
-      const response = await axios.get(`/api/customer/${customerId}`);
+      // const response = await axios.get(`${process.env.REACT_APP_API_URL}/customer/${customerId}`);
+      const response = await axios.get(`api/customer/${customerId}`);
       console.log('Customer info retrieved:', response.data);
       setCustomerInfo(response.data);
     } catch (error) {
