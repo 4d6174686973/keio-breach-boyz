@@ -1,0 +1,22 @@
+{
+    "name": "Backend Dev Container",
+    "dockerComposeFile": "../../docker-compose.yml",
+    "service": "backend",
+    "workspaceFolder": "/workspace",
+    "shutdownAction": "stopCompose",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "vscjava.vscode-java-pack",
+                "esbenp.prettier-vscode",
+                "dbaeumer.vscode-eslint",
+                "ms-azuretools.vscode-docker",
+                "donjayamanne.githistory"
+            ],
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "editor.formatOnSave": true
+            }
+        }
+    }
+}

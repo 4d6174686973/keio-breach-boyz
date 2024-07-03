@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'application'
+    // Apply the Spring Boot plugin
+    id 'org.springframework.boot' version '2.5.4'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group 'org.sample'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.scalar-labs:scalardb:3.9.1'
+    implementation 'info.picocli:picocli:4.7.1'
+    // Spring Boot dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClassName = 'sample.command.SampleCommand'
+}
+
+archivesBaseName = "sample"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8

@@ -1,37 +1,61 @@
 version: '3.8'
 
 services:
-  web:
-    build: 
-      context: .
-      dockerfile: .devcontainer/Dockerfile
-    container_name: web-1
+  backend:
+    build:
+      context: ./backend  # Adjust the path to your backend Dockerfile location
+      dockerfile: Dockerfile
+    container_name: backend
     volumes:
       - .:/workspace
-    ports:
-      - "3000:3000"
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
+    ports:
+      - "8080:8080"
     environment:
-      - SCALARDB_CONTACT_POINTS=cassandra  # Add necessary environment variables
-      - SCALARDB_USERNAME=cassandra
-      - SCALARDB_PASSWORD=cassandra
+      - SCALARDB_PROPERTIES=/workspace/scalardb/database.properties
+      # - SPRING_PROFILES_ACTIVE=dev  # Adjust according to your Spring Boot profiles
+      # - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/mydb
+      # - SPRING_DATASOURCE_USERNAME=root
+      # - SPRING_DATASOURCE_PASSWORD=mysql
+      # - CASSANDRA_CONTACT_POINTS=cassandra
+      # - CASSANDRA_PORT=9042
     depends_on:
       - cassandra
+      - mysql
+
+  frontend:
+    build:
+      context: ./frontend  # Adjust the path to your frontend Dockerfile location
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080/api  # Set the backend API URL for the React app
+    depends_on:
+      - backend
 
   cassandra:
     image: cassandra:4.0
-    container_name: cassandra-1
+    container_name: cassandra
+    environment:
+      - CASSANDRA_CLUSTER_NAME=TestCluster
+      - CASSANDRA_DC=DC1
+      - CASSANDRA_RACK=RAC1
+      - CASSANDRA_ENDPOINT_SNITCH=SimpleSnitch
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_START_RPC=true
     ports:
       - "9042:9042"
 
-  # mysql:
-  #   image: mysql:8.0
-  #   container_name: mysql-1
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: root
-  #     MYSQL_DATABASE: mydb
-  #     MYSQL_USER: user
-  #     MYSQL_PASSWORD: password
-  #   ports:
-  #     - "3306:3306"
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      # MYSQL_DATABASE: mydb
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: mysql
+    ports:
+      - "3306:3306"

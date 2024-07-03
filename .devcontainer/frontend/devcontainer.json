@@ -1,0 +1,21 @@
+{
+    "name": "Frontend Dev Container",
+    "dockerComposeFile": "../../docker-compose.yml",
+    "service": "frontend",
+    "workspaceFolder": "/workspace",
+    "shutdownAction": "stopCompose",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "esbenp.prettier-vscode",
+                "dbaeumer.vscode-eslint",
+                "ms-azuretools.vscode-docker",
+                "donjayamanne.githistory"
+            ],
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "editor.formatOnSave": true
+            }
+        }
+    }
+}
