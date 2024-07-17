@@ -19,6 +19,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=mysql
       - CASSANDRA_CONTACT_POINTS=cassandra
       - CASSANDRA_PORT=9042
+    networks:
+      - app-network
     depends_on:
       - cassandra
       - mysql
@@ -32,6 +34,8 @@ services:
       - "3000:3000"
     environment:
       - REACT_APP_API_URL=http://localhost:8080/api  # Set the backend API URL for the React app
+    networks:
+      - app-network
     depends_on:
       - backend
 
@@ -45,6 +49,8 @@ services:
       - CASSANDRA_ENDPOINT_SNITCH=SimpleSnitch
       - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_START_RPC=true
+    networks:
+      - app-network
     ports:
       - "9042:9042"
 
@@ -56,5 +62,11 @@ services:
       # MYSQL_DATABASE: mydb
       # MYSQL_USER: root
       # MYSQL_PASSWORD: mysql
+    networks:
+      - app-network
     ports:
       - "3306:3306"
+
+networks:
+  app-network:
+    driver: bridge

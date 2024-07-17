@@ -1,14 +1,14 @@
 # keio-breach-boyz
 
-Repo for Database Systems lecture project
+Old Repo for Database Systems lecture project.
 
-1. Clone ScalarDB repository
+- Initial idea of this repo was to use code from scalardb as basis for the backend and integrate it into react app frontend
+- Problem: Spring Boot integration somehow does not work
+- Also I think after trying 1 million things I somehow misconfigured the docker and devcontainer setup, which makes it difficult to further develop
 
-```sh
-git clone https://github.com/scalar-labs/scalardb.git
-```
+# How to run
 
-2. Build Docker Container
+### Build Docker Container
 
 Important: To fix context error while rebuilding, delete node_modules and app/node_modules
 
@@ -16,21 +16,20 @@ Important: To fix context error while rebuilding, delete node_modules and app/no
 docker-compose up --build
 ```
 
-2. Run App
+### Run App
+
+Open frontend dev container and run yarn commands
 
 ```sh
-cd app
 yarn
 yarn start
 ```
 
-# How to enter main container
+Website should run on http://localhost:3000/
 
-```sh
-docker exec -it web-container /bin/sh
-```
+# Other Notes
 
-# ScalarDB troubleshooting
+### ScalarDB troubleshooting
 
 If this Error occurs
 
@@ -45,7 +44,13 @@ run this command from root directory
 dos2unix scalardb/gradlew
 ```
 
-# ScalarDB commands
+### ScalarDB commands
+
+Clone Repo
+
+```sh
+git clone https://github.com/scalar-labs/scalardb.git
+```
 
 Getting Started
 
@@ -69,4 +74,10 @@ java -jar scalardb-schema-loader-3.9.6.jar --config database.properties --schema
 ./gradlew run --args="Repayment 1 8000"
 ./gradlew run --args="GetCustomerInfo 1"
 ./gradlew run --args="PlaceOrder 1 3:1,4:1"
+```
+
+# Build Jar File
+
+```sh
+./gradlew clean bootJar
 ```

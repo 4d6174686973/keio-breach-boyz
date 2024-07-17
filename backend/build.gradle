@@ -35,3 +35,8 @@ archivesBaseName = "sample"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+// Customize the bootJar task to change the output file name
+bootJar {
+    archiveFileName = 'app.jar'
+}

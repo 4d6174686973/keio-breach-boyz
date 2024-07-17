@@ -19,8 +19,11 @@ import java.util.UUID;
 import com.scalar.db.api.DistributedTransactionManager;
 import com.scalar.db.service.TransactionFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Component;
 
+@Component
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api")
 public class Sample implements AutoCloseable {
 
@@ -61,13 +64,12 @@ public class Sample implements AutoCloseable {
       int creditLimit,
       int creditTotal)
       throws TransactionException {
-    Optional<Result> customer =
-        transaction.get(
-            Get.newBuilder()
-                .namespace("customer")
-                .table("customers")
-                .partitionKey(Key.ofInt("customer_id", customerId))
-                .build());
+    Optional<Result> customer = transaction.get(
+        Get.newBuilder()
+            .namespace("customer")
+            .table("customers")
+            .partitionKey(Key.ofInt("customer_id", customerId))
+            .build());
     if (!customer.isPresent()) {
       transaction.put(
           Put.newBuilder()
@@ -84,13 +86,12 @@ public class Sample implements AutoCloseable {
   private void loadItemIfNotExists(
       DistributedTransaction transaction, int itemId, String name, int price)
       throws TransactionException {
-    Optional<Result> item =
-        transaction.get(
-            Get.newBuilder()
-                .namespace("order")
-                .table("items")
-                .partitionKey(Key.ofInt("item_id", itemId))
-                .build());
+    Optional<Result> item = transaction.get(
+        Get.newBuilder()
+            .namespace("order")
+            .table("items")
+            .partitionKey(Key.ofInt("item_id", itemId))
+            .build());
     if (!item.isPresent()) {
       transaction.put(
           Put.newBuilder()
@@ -103,28 +104,30 @@ public class Sample implements AutoCloseable {
     }
   }
 
-  @GetMapping("/customer/{id}")
+  @GetMapping("/customer/{customerId}")
   public String getCustomerInfo(@PathVariable int customerId) throws TransactionException {
     DistributedTransaction transaction = null;
     try {
       // Start a transaction
       transaction = manager.start();
 
-      // Retrieve the customer info for the specified customer ID from the customers table
-      Optional<Result> customer =
-          transaction.get(
-              Get.newBuilder()
-                  .namespace("customer")
-                  .table("customers")
-                  .partitionKey(Key.ofInt("customer_id", customerId))
-                  .build());
+      // Retrieve the customer info for the specified customer ID from the customers
+      // table
+      Optional<Result> customer = transaction.get(
+          Get.newBuilder()
+              .namespace("customer")
+              .table("customers")
+              .partitionKey(Key.ofInt("customer_id", customerId))
+              .build());
 
       if (!customer.isPresent()) {
-        // If the customer info the specified customer ID doesn't exist, throw an exception
+        // If the customer info the specified customer ID doesn't exist, throw an
+        // exception
         throw new RuntimeException("Customer not found");
       }
 
-      // Commit the transaction (even when the transaction is read-only, we need to commit)
+      // Commit the transaction (even when the transaction is read-only, we need to
+      // commit)
       transaction.commit();
 
       // Return the customer info as a JSON format
@@ -180,13 +183,12 @@ public class Sample implements AutoCloseable {
                 .build());
 
         // Retrieve the item info from the items table
-        Optional<Result> item =
-            transaction.get(
-                Get.newBuilder()
-                    .namespace("order")
-                    .table("items")
-                    .partitionKey(Key.ofInt("item_id", itemId))
-                    .build());
+        Optional<Result> item = transaction.get(
+            Get.newBuilder()
+                .namespace("order")
+                .table("items")
+                .partitionKey(Key.ofInt("item_id", itemId))
+                .build());
 
         if (!item.isPresent()) {
           throw new RuntimeException("Item not found");
@@ -197,13 +199,12 @@ public class Sample implements AutoCloseable {
       }
 
       // Check if the credit total exceeds the credit limit after payment
-      Optional<Result> customer =
-          transaction.get(
-              Get.newBuilder()
-                  .namespace("customer")
-                  .table("customers")
-                  .partitionKey(Key.ofInt("customer_id", customerId))
-                  .build());
+      Optional<Result> customer = transaction.get(
+          Get.newBuilder()
+              .namespace("customer")
+              .table("customers")
+              .partitionKey(Key.ofInt("customer_id", customerId))
+              .build());
       if (!customer.isPresent()) {
         throw new RuntimeException("Customer not found");
       }
@@ -239,13 +240,12 @@ public class Sample implements AutoCloseable {
   private String getOrderJson(DistributedTransaction transaction, String orderId)
       throws TransactionException {
     // Retrieve the order info for the order ID from the orders table
-    Optional<Result> order =
-        transaction.get(
-            Get.newBuilder()
-                .namespace("order")
-                .table("orders")
-                .indexKey(Key.ofText("order_id", orderId))
-                .build());
+    Optional<Result> order = transaction.get(
+        Get.newBuilder()
+            .namespace("order")
+            .table("orders")
+            .indexKey(Key.ofText("order_id", orderId))
+            .build());
 
     if (!order.isPresent()) {
       throw new RuntimeException("Order not found");
@@ -253,24 +253,23 @@ public class Sample implements AutoCloseable {
 
     int customerId = order.get().getInt("customer_id");
 
-    // Retrieve the customer info for the specified customer ID from the customers table
-    Optional<Result> customer =
-        transaction.get(
-            Get.newBuilder()
-                .namespace("customer")
-                .table("customers")
-                .partitionKey(Key.ofInt("customer_id", customerId))
-                .build());
+    // Retrieve the customer info for the specified customer ID from the customers
+    // table
+    Optional<Result> customer = transaction.get(
+        Get.newBuilder()
+            .namespace("customer")
+            .table("customers")
+            .partitionKey(Key.ofInt("customer_id", customerId))
+            .build());
     assert customer.isPresent();
 
     // Retrieve the order statements for the order ID from the statements table
-    List<Result> statements =
-        transaction.scan(
-            Scan.newBuilder()
-                .namespace("order")
-                .table("statements")
-                .partitionKey(Key.ofText("order_id", orderId))
-                .build());
+    List<Result> statements = transaction.scan(
+        Scan.newBuilder()
+            .namespace("order")
+            .table("statements")
+            .partitionKey(Key.ofText("order_id", orderId))
+            .build());
 
     // Make the statements JSONs
     List<String> statementJsons = new ArrayList<>();
@@ -279,13 +278,12 @@ public class Sample implements AutoCloseable {
       int itemId = statement.getInt("item_id");
 
       // Retrieve the item data from the items table
-      Optional<Result> item =
-          transaction.get(
-              Get.newBuilder()
-                  .namespace("order")
-                  .table("items")
-                  .partitionKey(Key.ofInt("item_id", itemId))
-                  .build());
+      Optional<Result> item = transaction.get(
+          Get.newBuilder()
+              .namespace("order")
+              .table("items")
+              .partitionKey(Key.ofInt("item_id", itemId))
+              .build());
 
       if (!item.isPresent()) {
         throw new RuntimeException("Item not found");
@@ -322,7 +320,8 @@ public class Sample implements AutoCloseable {
       // Get an order JSON for the specified order ID
       String orderJson = getOrderJson(transaction, orderId);
 
-      // Commit the transaction (even when the transaction is read-only, we need to commit)
+      // Commit the transaction (even when the transaction is read-only, we need to
+      // commit)
       transaction.commit();
 
       // Return the order info as a JSON format
@@ -343,13 +342,12 @@ public class Sample implements AutoCloseable {
       transaction = manager.start();
 
       // Retrieve the order info for the customer ID from the orders table
-      List<Result> orders =
-          transaction.scan(
-              Scan.newBuilder()
-                  .namespace("order")
-                  .table("orders")
-                  .partitionKey(Key.ofInt("customer_id", customerId))
-                  .build());
+      List<Result> orders = transaction.scan(
+          Scan.newBuilder()
+              .namespace("order")
+              .table("orders")
+              .partitionKey(Key.ofInt("customer_id", customerId))
+              .build());
 
       // Make order JSONs for the orders of the customer
       List<String> orderJsons = new ArrayList<>();
@@ -357,7 +355,8 @@ public class Sample implements AutoCloseable {
         orderJsons.add(getOrderJson(transaction, order.getText("order_id")));
       }
 
-      // Commit the transaction (even when the transaction is read-only, we need to commit)
+      // Commit the transaction (even when the transaction is read-only, we need to
+      // commit)
       transaction.commit();
 
       // Return the order info as a JSON format
@@ -377,14 +376,14 @@ public class Sample implements AutoCloseable {
       // Start a transaction
       transaction = manager.start();
 
-      // Retrieve the customer info for the specified customer ID from the customers table
-      Optional<Result> customer =
-          transaction.get(
-              Get.newBuilder()
-                  .namespace("customer")
-                  .table("customers")
-                  .partitionKey(Key.ofInt("customer_id", customerId))
-                  .build());
+      // Retrieve the customer info for the specified customer ID from the customers
+      // table
+      Optional<Result> customer = transaction.get(
+          Get.newBuilder()
+              .namespace("customer")
+              .table("customers")
+              .partitionKey(Key.ofInt("customer_id", customerId))
+              .build());
       if (!customer.isPresent()) {
         throw new RuntimeException("Customer not found");
       }

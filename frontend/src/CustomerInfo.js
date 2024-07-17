@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-// axios.defaults.baseURL = 'http://localhost:3000';
+const API_URL = 'http://localhost:8080/api';
 
 const CustomerInfo = () => {
   const [customerId, setCustomerId] = useState('');
@@ -10,12 +10,21 @@ const CustomerInfo = () => {
   const fetchCustomerInfo = async () => {
     console.log('Button clicked, fetching customer info for ID:', customerId);
     try {
-      // const response = await axios.get(`${process.env.REACT_APP_API_URL}/customer/${customerId}`);
-      const response = await axios.get(`api/customer/${customerId}`);
+      const response = await axios.get(`${API_URL}/customer/${customerId}`);
       console.log('Customer info retrieved:', response.data);
       setCustomerInfo(response.data);
     } catch (error) {
       console.error('Error fetching customer info:', error);
+    }
+  };
+
+  const loadInitialData = async () => {
+    console.log('Button clicked, loading initial data');
+    try {
+      await axios.post(`${API_URL}/data/load`);
+      console.log('Initial data loaded successfully');
+    } catch (error) {
+      console.error('Error loading initial data:', error);
     }
   };
 
@@ -32,10 +41,10 @@ const CustomerInfo = () => {
       {customerInfo && (
         <div>
           <h2>Customer Information</h2>
-          <p>ID: {customerInfo.id}</p>
-          <p>Name: {customerInfo.name}</p>
+          <p>{customerInfo}</p>
         </div>
       )}
+      <button onClick={loadInitialData}>Load Initial Data</button>
     </div>
   );
 };
